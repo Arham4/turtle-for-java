@@ -40,9 +40,7 @@ public final class Line {
         double yStart = y1;
         double xSpeed = speed * Math.cos(Math.toRadians(angle));
         double ySpeed = speed * Math.sin(Math.toRadians(angle));
-        boolean xDifferent = x1 != x2;
-        boolean yDifference = y1 != y2;
-        while ((!xDifferent || xStart != x2) && (!yDifference || yStart != y2)) {
+        while ((x1 == x2 || xStart != x2) && (y1 == y2 || yStart != y2)) {
             double nextX = getNextCoordinate(xStart, xSpeed, x2);
             double nextY = getNextCoordinate(yStart, ySpeed, y2);
             Line2D.Double line = new Line2D.Double(xStart, yStart, nextX, nextY);
@@ -53,8 +51,14 @@ public final class Line {
     }
 
     private double getNextCoordinate(double current, double incrementation, double capacity) {
-        if (incrementation + current > capacity) {
-            return capacity;
+        if (incrementation < 0) {
+            if (incrementation + current < capacity) {
+                return capacity;
+            }
+        } else {
+            if (incrementation + current > capacity) {
+                return capacity;
+            }
         }
         return current + incrementation;
     }
