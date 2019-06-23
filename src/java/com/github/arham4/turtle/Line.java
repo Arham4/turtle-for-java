@@ -5,7 +5,7 @@ import java.awt.geom.Line2D;
 /**
  * A complete line path, which is then incrementally drawn using {@link Line#draw(Screen, double, double)}.
  */
-public final class Line {
+final class Line {
     private final double x1;
     private final double y1;
     private final double x2;
@@ -19,7 +19,7 @@ public final class Line {
      * @param x2 The ending x-coordinate of the complete line path.
      * @param y2 The ending y-coordinate of the complete line path.
      */
-    public Line(double x1, double y1, double x2, double y2) {
+    Line(double x1, double y1, double x2, double y2) {
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
@@ -35,7 +35,7 @@ public final class Line {
      * @param angle  The angle at which respect the line is being drawn at.
      * @implNote This method performs synchronously.
      */
-    public void draw(Screen screen, double speed, double angle) {
+    void draw(Screen screen, double speed, double angle) {
         double xStart = x1;
         double yStart = y1;
         double xSpeed = speed * Math.cos(Math.toRadians(angle));
