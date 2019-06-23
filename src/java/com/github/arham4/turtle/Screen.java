@@ -23,7 +23,7 @@ public final class Screen extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.translate(400 / 2, 400 / 2);
+        g.translate(width / 2, height / 2);
         Graphics2D graphics2D = (Graphics2D) g;
         graphics2D.scale(1, -1);
         for (Shape shape : shapeList) {
