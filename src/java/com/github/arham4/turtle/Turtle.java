@@ -9,6 +9,7 @@ public final class Turtle {
     private double x;
     private double y;
     private double angle;
+    private double speed;
 
     /**
      * Creates a turtle.
@@ -17,9 +18,7 @@ public final class Turtle {
      */
     public Turtle(Screen screen) {
         this.screen = screen;
-        x = 0;
-        y = 0;
-        angle = 0;
+        speed = 3;
     }
 
     /**
@@ -45,7 +44,7 @@ public final class Turtle {
         double endY = y + (Math.sin(Math.toRadians(angle)) * amount);
         if (screen != null) {
             Line line = new Line(x, y, endX, endY);
-            line.draw(screen, 3, angle);
+            line.draw(screen, speed, angle);
         }
         x = endX;
         y = endY;
@@ -67,6 +66,16 @@ public final class Turtle {
      */
     public void left(double angle) {
         changeAngle(angle);
+    }
+
+    /**
+     * Sets the speed value to a new speed.
+     *
+     * @param speed The new speed at which to draw with the turtle.
+     * @implSpec The default value of the turtle's speed is 3.
+     */
+    public void speed(double speed) {
+        this.speed = speed;
     }
 
     /**
