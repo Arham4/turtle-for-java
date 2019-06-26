@@ -131,8 +131,8 @@ public final class Turtle {
         double ySpeed = speed * Math.sin(Math.toRadians(angle));
         while ((line.getX1() == line.getX2() || xStart != line.getX2())
                 && (line.getY1() == line.getY2() || yStart != line.getY2())) {
-            double nextX = getNextCoordinate(xStart, xSpeed, line.getX2());
-            double nextY = getNextCoordinate(yStart, ySpeed, line.getY2());
+            double nextX = getNextNumberWithoutOverflow(xStart, xSpeed, line.getX2());
+            double nextY = getNextNumberWithoutOverflow(yStart, ySpeed, line.getY2());
             Line2D.Double smallLine = new Line2D.Double(xStart, yStart, nextX, nextY);
             lines.add(smallLine);
             screen.refreshFrame();
@@ -143,7 +143,27 @@ public final class Turtle {
         }
     }
 
-    private double getNextCoordinate(double current, double incrementation, double capacity) {
+    private void drawTurn(double finalAngle, boolean left) {
+        while (angle != finalAngle) {
+            angle = getNextAngleWithoutOverflow(angle, (left ? 1.5 : -1.5) * speed, finalAngle);
+            screen.refreshFrame();
+        }
+    }
+
+    private double getNextAngleWithoutOverflow(double current, double incrementation, double capacity) {
+        if (incrementation < 0) {
+            if (getProperAngle(current, incrementation) < capacity) {
+                return capacity;
+            }
+        } else {
+            if (getProperAngle(current, incrementation) > capacity) {
+                return capacity;
+            }
+        }
+        return getProperAngle(current, incrementation);
+    }
+
+    private double getNextNumberWithoutOverflow(double current, double incrementation, double capacity) {
         if (incrementation < 0) {
             if (incrementation + current < capacity) {
                 return capacity;
@@ -162,7 +182,7 @@ public final class Turtle {
      * @param angle The angle at which to turn the turtle.
      */
     public void right(double angle) {
-        changeAngle(-angle);
+        drawTurn(getProperAngle(this.angle, -angle), false);
     }
 
     /**
@@ -171,7 +191,7 @@ public final class Turtle {
      * @param angle The angle at which to turn the turtle.
      */
     public void left(double angle) {
-        changeAngle(angle);
+        drawTurn(getProperAngle(this.angle, angle), true);
     }
 
     /**
@@ -185,18 +205,19 @@ public final class Turtle {
     }
 
     /**
-     * Changes the angle the turlte is facing. This method ensures the angle remains in the range [0, 360).
+     * Changes the angle the turtle is facing. This method ensures the angle remains in the range [0, 360).
      *
-     * @param angle The angle at which the current angle is being modified.
+     * @param angle    The current angle.
+     * @param addition The angle at which the current angle is being modified.
      */
-    private void changeAngle(double angle) {
-        double newAmount = this.angle + angle;
+    private double getProperAngle(double angle, double addition) {
+        double newAmount = angle + addition;
         if (newAmount < 0) {
-            this.angle = 360 - (Math.abs(angle) - this.angle);
+            return 360 - Math.abs(addition) - angle;
         } else if (newAmount >= 360) {
-            this.angle = (this.angle + Math.abs(angle)) - 360;
+            return angle + Math.abs(addition) - 360;
         } else {
-            this.angle += angle;
+            return newAmount;
         }
     }
 
