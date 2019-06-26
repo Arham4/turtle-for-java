@@ -1,10 +1,13 @@
 package com.github.arham4.turtle;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A {@code Turtle} entity. A turtle is essentially a character that can be manipulated to perform actions on a screen,
@@ -12,11 +15,13 @@ import java.io.IOException;
  */
 public final class Turtle {
     private Screen screen;
+    private Color color;
     private BufferedImage shape;
     private double x;
     private double y;
     private double angle;
     private double speed;
+    private List<Shape> lines;
 
     /**
      * Creates a turtle.
@@ -24,13 +29,39 @@ public final class Turtle {
     public Turtle() {
         shape("classic.png");
         speed = 3;
+        lines = new ArrayList<>();
     }
 
+    /**
+     * Changes the shape of the turtle. Shapes are not required to use an <em>addShape</em> function.
+     *
+     * @param name The complete name of the "shape," including its file extension.
+     */
     public void shape(String name) {
         try {
             shape = ImageIO.read(new File(name));
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Sets the color of the turtle and the line it draws.
+     *
+     * @param color The new {@link Color} to set the turtle and line colors to.
+     */
+    public void color(Color color) {
+        this.color = color;
+        int width = shape.getWidth();
+        int height = shape.getHeight();
+        for (int column = 0; column < width; column++) {
+            for (int row = 0; row < height; row++) {
+                int rgb = shape.getRGB(row, column);
+                if (rgb == 0) {
+                    continue;
+                }
+                shape.setRGB(row, column, color.getRGB());
+            }
         }
     }
 
@@ -74,11 +105,13 @@ public final class Turtle {
         double yStart = line.getY1();
         double xSpeed = speed * Math.cos(Math.toRadians(angle));
         double ySpeed = speed * Math.sin(Math.toRadians(angle));
-        while ((line.getX1() == line.getX2() || xStart != line.getX2()) && (line.getY1() == line.getY2() || yStart != line.getY2())) {
+        while ((line.getX1() == line.getX2() || xStart != line.getX2())
+                && (line.getY1() == line.getY2() || yStart != line.getY2())) {
             double nextX = getNextCoordinate(xStart, xSpeed, line.getX2());
             double nextY = getNextCoordinate(yStart, ySpeed, line.getY2());
             Line2D.Double smallLine = new Line2D.Double(xStart, yStart, nextX, nextY);
-            screen.addShape(smallLine);
+            lines.add(smallLine);
+            screen.refreshFrame();
             xStart = nextX;
             yStart = nextY;
             x = nextX;
@@ -161,5 +194,13 @@ public final class Turtle {
 
     public double getAngle() {
         return angle;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public List<Shape> getLines() {
+        return lines;
     }
 }

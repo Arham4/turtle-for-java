@@ -15,7 +15,6 @@ public final class Screen extends JPanel {
 
     private int width = 200;
     private int height = 200;
-    private final List<Shape> shapeList = new ArrayList<>();
     private final List<Turtle> turtleList = new ArrayList<>();
 
     @Override
@@ -30,22 +29,17 @@ public final class Screen extends JPanel {
         Graphics2D graphics2D = (Graphics2D) g;
         graphics2D.scale(1, -1);
         for (Turtle turtle : turtleList) {
+            for (Shape shape : turtle.getLines()) {
+                graphics2D.setPaint(turtle.getColor());
+                graphics2D.draw(shape);
+            }
             BufferedImage shape = turtle.getShape();
             double angle = Math.toRadians(turtle.getAngle());
             AffineTransform trans = (AffineTransform) graphics2D.getTransform().clone();
-            // - - = right
-            // + - = up
-            // + + = left
-            // - + = down
-//            trans.setToTranslation(turtle.getX() - (shape.getWidth() / 2.0),
-//                    turtle.getY() + (shape.getHeight() / 2.0));
             trans.setToTranslation(turtle.getX() - (Math.cos(angle) * (shape.getWidth() / 2.0) - ((shape.getHeight() / 2.0) * Math.sin(angle))),
                     turtle.getY() - (Math.sin(angle) * (shape.getHeight() / 2.0)) - ((shape.getWidth() / 2.0) * Math.cos(angle)));
             trans.rotate(angle);
             graphics2D.drawImage(shape, trans, this);
-        }
-        for (Shape shape : shapeList) {
-            graphics2D.draw(shape);
         }
     }
 
@@ -83,13 +77,10 @@ public final class Screen extends JPanel {
     }
 
     /**
-     * Adds a shape synchronously to the screen. Once a shape is added, the drawing thread sleeps for 10 milliseconds
-     * and proceeds to redraw the screen.
-     *
-     * @param shape The shape to add to the screen.
+     * Refreshes the frame synchronously to the screen. The drawing thread sleeps for 10 milliseconds
+     * and then proceeds to redraw the screen.
      */
-    public void addShape(Shape shape) {
-        shapeList.add(shape);
+    public void refreshFrame() {
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
