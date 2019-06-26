@@ -1,11 +1,18 @@
 package com.github.arham4.turtle;
 
+import javax.imageio.ImageIO;
+import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 /**
  * A {@code Turtle} entity. A turtle is essentially a character that can be manipulated to perform actions on a screen,
  * such as movement and changes in its appearance.
  */
 public final class Turtle {
-    private final Screen screen;
+    private Screen screen;
+    private BufferedImage shape;
     private double x;
     private double y;
     private double angle;
@@ -13,12 +20,18 @@ public final class Turtle {
 
     /**
      * Creates a turtle.
-     *
-     * @param screen The {@link Screen} to add this turtle to.
      */
-    public Turtle(Screen screen) {
-        this.screen = screen;
+    public Turtle() {
+        shape("classic.png");
         speed = 3;
+    }
+
+    public void shape(String name) {
+        try {
+            shape = ImageIO.read(new File(name));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -44,10 +57,46 @@ public final class Turtle {
         double endY = y + (Math.sin(Math.toRadians(angle)) * amount);
         if (screen != null) {
             Line line = new Line(x, y, endX, endY);
-            line.draw(screen, speed, angle);
+            drawLine(line);
         }
         x = endX;
         y = endY;
+    }
+
+    /**
+     * Incrementally draws a line path. A given line is split by its speed value with respect to a given angle
+     * and then drawn piece by piece to have an end result of the complete line.
+     *
+     * @implNote This method performs synchronously.
+     */
+    private void drawLine(Line line) {
+        double xStart = line.getX1();
+        double yStart = line.getY1();
+        double xSpeed = speed * Math.cos(Math.toRadians(angle));
+        double ySpeed = speed * Math.sin(Math.toRadians(angle));
+        while ((line.getX1() == line.getX2() || xStart != line.getX2()) && (line.getY1() == line.getY2() || yStart != line.getY2())) {
+            double nextX = getNextCoordinate(xStart, xSpeed, line.getX2());
+            double nextY = getNextCoordinate(yStart, ySpeed, line.getY2());
+            Line2D.Double smallLine = new Line2D.Double(xStart, yStart, nextX, nextY);
+            screen.addShape(smallLine);
+            xStart = nextX;
+            yStart = nextY;
+            x = nextX;
+            y = nextY;
+        }
+    }
+
+    private double getNextCoordinate(double current, double incrementation, double capacity) {
+        if (incrementation < 0) {
+            if (incrementation + current < capacity) {
+                return capacity;
+            }
+        } else {
+            if (incrementation + current > capacity) {
+                return capacity;
+            }
+        }
+        return current + incrementation;
     }
 
     /**
@@ -92,5 +141,25 @@ public final class Turtle {
         } else {
             this.angle += angle;
         }
+    }
+
+    public BufferedImage getShape() {
+        return shape;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    void setScreen(Screen screen) {
+        this.screen = screen;
+    }
+
+    public double getAngle() {
+        return angle;
     }
 }

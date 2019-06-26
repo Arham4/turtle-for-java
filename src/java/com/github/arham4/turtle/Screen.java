@@ -2,6 +2,8 @@ package com.github.arham4.turtle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public final class Screen extends JPanel {
     private int width = 200;
     private int height = 200;
     private final List<Shape> shapeList = new ArrayList<>();
+    private final List<Turtle> turtleList = new ArrayList<>();
 
     @Override
     public Dimension getPreferredSize() {
@@ -26,6 +29,21 @@ public final class Screen extends JPanel {
         g.translate(width / 2, height / 2);
         Graphics2D graphics2D = (Graphics2D) g;
         graphics2D.scale(1, -1);
+        for (Turtle turtle : turtleList) {
+            BufferedImage shape = turtle.getShape();
+            double angle = Math.toRadians(turtle.getAngle());
+            AffineTransform trans = (AffineTransform) graphics2D.getTransform().clone();
+            // - - = right
+            // + - = up
+            // + + = left
+            // - + = down
+//            trans.setToTranslation(turtle.getX() - (shape.getWidth() / 2.0),
+//                    turtle.getY() + (shape.getHeight() / 2.0));
+            trans.setToTranslation(turtle.getX() - (Math.cos(angle) * (shape.getWidth() / 2.0) - ((shape.getHeight() / 2.0) * Math.sin(angle))),
+                    turtle.getY() - (Math.sin(angle) * (shape.getHeight() / 2.0)) - ((shape.getWidth() / 2.0) * Math.cos(angle)));
+            trans.rotate(angle);
+            graphics2D.drawImage(shape, trans, this);
+        }
         for (Shape shape : shapeList) {
             graphics2D.draw(shape);
         }
@@ -78,5 +96,10 @@ public final class Screen extends JPanel {
             e.printStackTrace();
         }
         repaint();
+    }
+
+    public void addTurtle(Turtle turtle) {
+        turtleList.add(turtle);
+        turtle.setScreen(this);
     }
 }

@@ -1,7 +1,5 @@
 package com.github.arham4.turtle;
 
-import java.awt.geom.Line2D;
-
 /**
  * A complete line path, which is then incrementally drawn using {@link Line#draw(Screen, double, double)}.
  */
@@ -26,40 +24,19 @@ final class Line {
         this.y2 = y2;
     }
 
-    /**
-     * Incrementally draws a line path. A given line is split by its speed value with respect to a given angle
-     * and then drawn piece by piece to have an end result of the complete line.
-     *
-     * @param screen The screen to draw the given line to.
-     * @param speed  The speed at which to draw the line.
-     * @param angle  The angle at which respect the line is being drawn at.
-     * @implNote This method performs synchronously.
-     */
-    void draw(Screen screen, double speed, double angle) {
-        double xStart = x1;
-        double yStart = y1;
-        double xSpeed = speed * Math.cos(Math.toRadians(angle));
-        double ySpeed = speed * Math.sin(Math.toRadians(angle));
-        while ((x1 == x2 || xStart != x2) && (y1 == y2 || yStart != y2)) {
-            double nextX = getNextCoordinate(xStart, xSpeed, x2);
-            double nextY = getNextCoordinate(yStart, ySpeed, y2);
-            Line2D.Double line = new Line2D.Double(xStart, yStart, nextX, nextY);
-            screen.addShape(line);
-            xStart = nextX;
-            yStart = nextY;
-        }
+    public double getX1() {
+        return x1;
     }
 
-    private double getNextCoordinate(double current, double incrementation, double capacity) {
-        if (incrementation < 0) {
-            if (incrementation + current < capacity) {
-                return capacity;
-            }
-        } else {
-            if (incrementation + current > capacity) {
-                return capacity;
-            }
-        }
-        return current + incrementation;
+    public double getY1() {
+        return y1;
+    }
+
+    public double getX2() {
+        return x2;
+    }
+
+    public double getY2() {
+        return y2;
     }
 }
