@@ -145,22 +145,9 @@ public final class Turtle {
 
     private void drawTurn(double finalAngle, boolean left) {
         while (angle != finalAngle) {
-            angle = getNextAngleWithoutOverflow(angle, (left ? 1.5 : -1.5) * speed, finalAngle);
+            angle = getProperAngle(angle, (left ? 1.5 : -1.5) * speed);
             screen.refreshFrame();
         }
-    }
-
-    private double getNextAngleWithoutOverflow(double current, double incrementation, double capacity) {
-        if (incrementation < 0) {
-            if (getProperAngle(current, incrementation) < capacity) {
-                return capacity;
-            }
-        } else {
-            if (getProperAngle(current, incrementation) > capacity) {
-                return capacity;
-            }
-        }
-        return getProperAngle(current, incrementation);
     }
 
     private double getNextNumberWithoutOverflow(double current, double incrementation, double capacity) {
