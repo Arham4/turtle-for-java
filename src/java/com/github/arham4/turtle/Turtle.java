@@ -1,5 +1,7 @@
 package com.github.arham4.turtle;
 
+import com.github.arham4.turtle.utils.TurtleColor;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Line2D;
@@ -43,6 +45,28 @@ public final class Turtle {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Sets the color of the turtle and the line it draws using the name of the color. A full list of colors can
+     * be found at {@link TurtleColor}.
+     *
+     * @param name The name of the color.
+     * @see TurtleColor
+     */
+    public void color(String name) {
+        color(TurtleColor.COLOR_FOR_NAME.get(name.toLowerCase()));
+    }
+
+    /**
+     * Sets the color of the turtle and the line it draws using the name of the color. A full list of colors can
+     * be found at {@link TurtleColor}.
+     *
+     * @param color The {@link TurtleColor} to set it to.
+     * @see TurtleColor
+     */
+    public void color(TurtleColor color) {
+        color(color.getColor());
     }
 
     /**

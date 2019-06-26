@@ -1,7 +1,5 @@
 package com.github.arham4.turtle;
 
-import java.awt.*;
-
 /**
  * A sample application that makes a turtle make a square.
  */
@@ -12,7 +10,7 @@ public final class MakeASquare {
 
         Turtle turtle = new Turtle();
         screen.addTurtle(turtle);
-        turtle.color(new Color(37, 35, 79));
+        turtle.color("dODGER blue");
         for (int i = 0; i < 4; i++) {
             turtle.forward(100);
             turtle.left(90);
