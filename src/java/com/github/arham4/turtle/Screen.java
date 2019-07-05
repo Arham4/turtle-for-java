@@ -29,7 +29,7 @@ public final class Screen extends JPanel {
         Graphics2D graphics2D = (Graphics2D) g;
         graphics2D.scale(1, -1);
         for (Turtle turtle : turtleList) {
-            for (TurtleShape shape : turtle.getLines()) {
+            for (ColoredShape shape : turtle.getLines()) {
                 graphics2D.setPaint(shape.getColor());
                 graphics2D.draw(shape.getShape());
             }

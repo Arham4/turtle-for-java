@@ -1,13 +1,17 @@
 package com.github.arham4.turtle;
 
 import com.github.arham4.turtle.utils.TurtleColor;
+import com.github.arham4.turtle.utils.TurtleShape;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +27,7 @@ public final class Turtle {
     private double y;
     private double angle;
     private double speed;
-    private List<TurtleShape> lines;
+    private List<ColoredShape> lines;
 
     /**
      * Creates a turtle.
@@ -35,32 +39,66 @@ public final class Turtle {
     }
 
     /**
-     * Changes the shape of the turtle. Shapes are not required to use an <em>addShape</em> function.
+     * Changes the shape of the turtle by looking at the location specified (starting from the project root). Shapes
+     * are not required to use an <em>addShape</em> function. A shape specified in {@link TurtleShape} may be used. If
+     * a shape's name is specified that is not in the {@link TurtleShape} class, the shape will load from an image file.
      *
      * @param name The complete name of the "shape," including its file extension.
+     * @throws IOException if the File is not found.
+     * @see TurtleShape
      */
     public void shape(String name) {
-        try {
-            shape = ImageIO.read(new File(name));
-        } catch (IOException e) {
-            e.printStackTrace();
+        shape = TurtleShape.SHAPE_FOR_NAME.get(name.toLowerCase());
+        if (shape == null) {
+            try {
+                shape = ImageIO.read(new File(name));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
-     * Sets the color of the turtle and the line it draws using the name of the color. A full list of colors can
-     * be found at {@link TurtleColor}.
+     * Sets the shape of the turtle using the appropriate {@link TurtleShape} constant. A full list of default shapes
+     * can be found at {@link TurtleShape}.
      *
-     * @param name The name of the color.
-     * @see TurtleColor
+     * @param shape The {@link TurtleShape} to set it to.
+     * @see TurtleShape
      */
-    public void color(String name) {
-        color(TurtleColor.COLOR_FOR_NAME.get(name.toLowerCase()));
+    public void shape(TurtleShape shape) {
+        shape(shape.getName());
+    }
+
+    /**
+     * Due to the power of the {@link ImageIO} class, this helper method is made so one can load a {@link BufferedImage}
+     * for the turtle to embody as its shape through custom methods.
+     *
+     * @param bufferedImage The {@code BufferedImage} to set the turtle to.
+     * @see ImageIO#read(URL)
+     * @see ImageIO#read(File)
+     * @see ImageIO#read(InputStream)
+     * @see ImageIO#read(ImageInputStream)
+     */
+    public void shape(BufferedImage bufferedImage) {
+        shape = bufferedImage;
     }
 
     /**
      * Sets the color of the turtle and the line it draws using the name of the color. A full list of colors can
-     * be found at {@link TurtleColor}.
+     * be found at {@link TurtleColor}. If the color is invalid, the turtle will turn black.
+     *
+     * @param name The name of the color.
+     * @implNote If a name that is not supported by the {@code TurtleColor} class is inputted, the turtle defaults to
+     * be black.
+     * @see TurtleColor
+     */
+    public void color(String name) {
+        color(TurtleColor.COLOR_FOR_NAME.getOrDefault(name.toLowerCase(), TurtleColor.BLACK.getColor()));
+    }
+
+    /**
+     * Sets the color of the turtle and the line it draws using the appropriate {@link TurtleColor} constant. A full
+     * list of colors can be found at {@link TurtleColor}.
      *
      * @param color The {@link TurtleColor} to set it to.
      * @see TurtleColor
@@ -73,9 +111,14 @@ public final class Turtle {
      * Sets the color of the turtle and the line it draws.
      *
      * @param color The new {@link Color} to set the turtle and line colors to.
+     * @implNote This method only recolors the {@code shape} if the shape is a default shape as defined in
+     * {@link TurtleShape}.
      */
     public void color(Color color) {
         this.color = color;
+        if (!TurtleShape.SHAPE_FOR_NAME.containsValue(shape)) {
+            return;
+        }
         int width = shape.getWidth();
         int height = shape.getHeight();
         for (int column = 0; column < height; column++) {
@@ -134,7 +177,7 @@ public final class Turtle {
             double nextX = getNextNumberWithoutOverflow(xStart, xSpeed, line.getX2());
             double nextY = getNextNumberWithoutOverflow(yStart, ySpeed, line.getY2());
             Line2D.Double smallLine = new Line2D.Double(xStart, yStart, nextX, nextY);
-            lines.add(new TurtleShape(smallLine, color));
+            lines.add(new ColoredShape(smallLine, color));
             screen.refreshFrame();
             xStart = nextX;
             yStart = nextY;
@@ -247,7 +290,7 @@ public final class Turtle {
         return color;
     }
 
-    public List<TurtleShape> getLines() {
+    public List<ColoredShape> getLines() {
         return lines;
     }
 }
