@@ -23,7 +23,7 @@ public final class Turtle {
     private double y;
     private double angle;
     private double speed;
-    private List<Shape> lines;
+    private List<TurtleShape> lines;
 
     /**
      * Creates a turtle.
@@ -78,8 +78,8 @@ public final class Turtle {
         this.color = color;
         int width = shape.getWidth();
         int height = shape.getHeight();
-        for (int column = 0; column < width; column++) {
-            for (int row = 0; row < height; row++) {
+        for (int column = 0; column < height; column++) {
+            for (int row = 0; row < width; row++) {
                 int rgb = shape.getRGB(row, column);
                 if (rgb == 0) {
                     continue;
@@ -134,7 +134,7 @@ public final class Turtle {
             double nextX = getNextNumberWithoutOverflow(xStart, xSpeed, line.getX2());
             double nextY = getNextNumberWithoutOverflow(yStart, ySpeed, line.getY2());
             Line2D.Double smallLine = new Line2D.Double(xStart, yStart, nextX, nextY);
-            lines.add(smallLine);
+            lines.add(new TurtleShape(smallLine, color));
             screen.refreshFrame();
             xStart = nextX;
             yStart = nextY;
@@ -247,7 +247,7 @@ public final class Turtle {
         return color;
     }
 
-    public List<Shape> getLines() {
+    public List<TurtleShape> getLines() {
         return lines;
     }
 }

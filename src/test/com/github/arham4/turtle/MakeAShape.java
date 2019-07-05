@@ -11,7 +11,13 @@ public final class MakeAShape {
         Turtle turtle = new Turtle();
         screen.addTurtle(turtle);
         turtle.shape("gnome.png");
-        final int sides = 4;
+        drawShape(turtle, 4);
+        turtle.color("green");
+        turtle.forward(100);
+        drawShape(turtle, 4);
+    }
+
+    private static void drawShape(Turtle turtle, int sides) {
         for (int i = 0; i < sides; i++) {
             turtle.forward(100);
             turtle.left(360 / sides);

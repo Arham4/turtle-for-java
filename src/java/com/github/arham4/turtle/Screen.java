@@ -29,9 +29,9 @@ public final class Screen extends JPanel {
         Graphics2D graphics2D = (Graphics2D) g;
         graphics2D.scale(1, -1);
         for (Turtle turtle : turtleList) {
-            for (Shape shape : turtle.getLines()) {
-                graphics2D.setPaint(turtle.getColor());
-                graphics2D.draw(shape);
+            for (TurtleShape shape : turtle.getLines()) {
+                graphics2D.setPaint(shape.getColor());
+                graphics2D.draw(shape.getShape());
             }
             BufferedImage shape = turtle.getShape();
             double angle = Math.toRadians(turtle.getAngle());
