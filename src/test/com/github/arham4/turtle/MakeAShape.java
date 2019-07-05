@@ -1,19 +1,20 @@
 package com.github.arham4.turtle;
 
 /**
- * A sample application that makes a turtle make a square.
+ * A sample application that makes a turtle make a shape given the amount of sides.
  */
-public final class MakeASquare {
+public final class MakeAShape {
     public static void main(String[] args) {
         Screen screen = new Screen();
         screen.setup(400, 400);
 
         Turtle turtle = new Turtle();
         screen.addTurtle(turtle);
-        turtle.color("dODGER blue");
-        for (int i = 0; i < 4; i++) {
+        turtle.shape("gnome.png");
+        final int sides = 4;
+        for (int i = 0; i < sides; i++) {
             turtle.forward(100);
-            turtle.left(90);
+            turtle.left(360 / sides);
         }
     }
 }

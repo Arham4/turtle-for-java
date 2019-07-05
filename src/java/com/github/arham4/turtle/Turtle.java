@@ -145,9 +145,23 @@ public final class Turtle {
 
     private void drawTurn(double finalAngle, boolean left) {
         while (angle != finalAngle) {
-            angle = getProperAngle(angle, (left ? 1.5 : -1.5) * speed);
+            angle = getNextAngleWithoutOverflow(angle, (left ? 1.5 : -1.5) * 1.5, finalAngle);
             screen.refreshFrame();
         }
+    }
+
+    private double getNextAngleWithoutOverflow(double current, double incrementation, double capacity) {
+        double angle = current + incrementation;
+        if (incrementation > 0) {
+            if (angle > capacity) {
+                return capacity;
+            }
+        } else {
+            if (angle < capacity) {
+                return capacity;
+            }
+        }
+        return angle;
     }
 
     private double getNextNumberWithoutOverflow(double current, double incrementation, double capacity) {
@@ -169,7 +183,7 @@ public final class Turtle {
      * @param angle The angle at which to turn the turtle.
      */
     public void right(double angle) {
-        drawTurn(getProperAngle(this.angle, -angle), false);
+        drawTurn(this.angle - angle, false);
     }
 
     /**
@@ -178,7 +192,7 @@ public final class Turtle {
      * @param angle The angle at which to turn the turtle.
      */
     public void left(double angle) {
-        drawTurn(getProperAngle(this.angle, angle), true);
+        drawTurn(this.angle + angle, true);
     }
 
     /**
@@ -196,6 +210,7 @@ public final class Turtle {
      *
      * @param angle    The current angle.
      * @param addition The angle at which the current angle is being modified.
+     * @apiNote Currently, this method is not being employed due to mathematical errors in incremental turning.
      */
     private double getProperAngle(double angle, double addition) {
         double newAmount = angle + addition;
