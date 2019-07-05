@@ -89,6 +89,11 @@ public final class Screen extends JPanel {
         repaint();
     }
 
+    /**
+     * Adds a {@link Turtle} to be displayed on this {@code Screen}.
+     *
+     * @param turtle The {@link Turtle} to add.
+     */
     public void addTurtle(Turtle turtle) {
         turtleList.add(turtle);
         turtle.setScreen(this);

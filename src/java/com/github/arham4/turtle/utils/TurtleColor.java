@@ -152,6 +152,9 @@ public enum TurtleColor {
     SLATE_BLUE("slate blue", new Color(106, 90, 205)),
     DARK_SLATE_BLUE("dark slate blue", new Color(72, 61, 139));
 
+    /**
+     * Each {@code name} of the {@code TurtleColor}s paired with their respective {@link Color}.
+     */
     public static final Map<String, Color> COLOR_FOR_NAME;
 
     static {

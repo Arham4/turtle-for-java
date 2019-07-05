@@ -30,10 +30,10 @@ public final class Turtle {
     private List<ColoredShape> lines;
 
     /**
-     * Creates a turtle.
+     * Creates a turtle with the {@link TurtleShape#CLASSIC} {@code shape} and a {@code speed} of 3.
      */
     public Turtle() {
-        shape("classic.png");
+        shape(TurtleShape.CLASSIC);
         speed = 3;
         lines = new ArrayList<>();
     }
@@ -165,6 +165,7 @@ public final class Turtle {
      * Incrementally draws a line path. A given line is split by its speed value with respect to a given angle
      * and then drawn piece by piece to have an end result of the complete line.
      *
+     * @param line The complete line path to draw.
      * @implNote This method performs synchronously.
      */
     private void drawLine(Line line) {
@@ -186,25 +187,19 @@ public final class Turtle {
         }
     }
 
+    /**
+     * Incrementally turns a turtle. A given angle is split by the {@code speed} value divided by 2 and then
+     * multiplied by a magnitude of 1.5.
+     *
+     * @param finalAngle The angle to reach by the end of the execution of this method.
+     * @param left       Is the turning going in the left direction or not?
+     * @implNote This method performs synchronously.
+     */
     private void drawTurn(double finalAngle, boolean left) {
         while (angle != finalAngle) {
-            angle = getNextAngleWithoutOverflow(angle, (left ? 1.5 : -1.5) * 1.5, finalAngle);
+            angle = getNextNumberWithoutOverflow(angle, (left ? 1.5 : -1.5) * (speed / 2), finalAngle);
             screen.refreshFrame();
         }
-    }
-
-    private double getNextAngleWithoutOverflow(double current, double incrementation, double capacity) {
-        double angle = current + incrementation;
-        if (incrementation > 0) {
-            if (angle > capacity) {
-                return capacity;
-            }
-        } else {
-            if (angle < capacity) {
-                return capacity;
-            }
-        }
-        return angle;
     }
 
     private double getNextNumberWithoutOverflow(double current, double incrementation, double capacity) {
@@ -266,14 +261,29 @@ public final class Turtle {
         }
     }
 
+    /**
+     * Gets the raw image of the current "shape" being represented by the turtle.
+     *
+     * @return The raw image of the current shape.
+     */
     public BufferedImage getShape() {
         return shape;
     }
 
+    /**
+     * The current x-coordinate of the center of the Turtle.
+     *
+     * @return The current x-coordinate of the Turtle.
+     */
     public double getX() {
         return x;
     }
 
+    /**
+     * The current y-coordinate of the center of the Turtle.
+     *
+     * @return The current y-coordinate of the Turtle.
+     */
     public double getY() {
         return y;
     }
@@ -282,15 +292,26 @@ public final class Turtle {
         this.screen = screen;
     }
 
+    /**
+     * Gets the angle the Turtle is facing. It is possible for the angle to be greater than or equal to 360 and less
+     * than or equal to 0.
+     *
+     * @return Gets the angle the Turtle is facing.
+     */
     public double getAngle() {
         return angle;
     }
 
+    /**
+     * The color of the Turtle.
+     *
+     * @return The color of the Turtle.
+     */
     public Color getColor() {
         return color;
     }
 
-    public List<ColoredShape> getLines() {
+    List<ColoredShape> getLines() {
         return lines;
     }
 }
