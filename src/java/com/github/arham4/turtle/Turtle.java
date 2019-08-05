@@ -133,6 +133,14 @@ public final class Turtle {
     }
 
     /**
+     * Moves Turtle to the origin – coordinates (0,0) – and set its heading to its start-orientation.
+     */
+    public void home() {
+        setPos(0, 0);
+        setHeading(0);
+    }
+
+    /**
      * Makes a turtle go to a certain coordinate point.
      *
      * @param x The x-coordinate for the turtle to go to.
