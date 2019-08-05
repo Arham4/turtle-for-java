@@ -144,6 +144,20 @@ public final class Turtle {
     }
 
     /**
+     * A helper function to call the goTo method.
+     */
+    public void setPos(double x, double y) {
+        goTo(x, y);
+    }
+
+    /**
+     * A helper function to call the goTo method.
+     */
+    public void setPosition(double x, double y) {
+        goTo(x, y);
+    }
+
+    /**
      * Makes a turtle move forward with respect to its current angle that it is facing.
      *
      * @param amount The distance for the turtle to move. This number is taken and then multiplied with the cosine
@@ -153,6 +167,50 @@ public final class Turtle {
     public void forward(double amount) {
         double endX = x + (Math.cos(Math.toRadians(angle)) * amount);
         double endY = y + (Math.sin(Math.toRadians(angle)) * amount);
+        axialMovement(endX, endY);
+    }
+
+    /**
+     * A helper function to call the forward function.
+     */
+    public void fd(double amount) {
+        forward(amount);
+    }
+
+    /**
+     * Makes a turtle move backwards with respect to its current angle that it is facing.
+     *
+     * @param amount The distance for the turtle to move. This number is taken and then multiplied with the cosine
+     *               of the angle at which the turtle is currently facing for the x distance and done the same
+     *               for the y-position, using sine instead.
+     */
+    public void backward(double amount) {
+        double endX = x - (Math.cos(Math.toRadians(angle)) * amount);
+        double endY = y - (Math.sin(Math.toRadians(angle)) * amount);
+        axialMovement(endX, endY);
+    }
+
+    /**
+     * A helper function to call the backward function.
+     */
+    public void bk(double amount) {
+        backward(amount);
+    }
+
+    /**
+     * A helper function to call the backward function.
+     */
+    public void back(double amount) {
+        backward(amount);
+    }
+
+    /**
+     * Performs the actual forward/backwards movement sequence.
+     *
+     * @param endX The end X-coordinate to land.
+     * @param endY The end Y-coordinate to land.
+     */
+    private void axialMovement(double endX, double endY) {
         if (screen != null) {
             Line line = new Line(x, y, endX, endY);
             drawLine(line);
@@ -171,8 +229,8 @@ public final class Turtle {
     private void drawLine(Line line) {
         double xStart = line.getX1();
         double yStart = line.getY1();
-        double xSpeed = speed * Math.cos(Math.toRadians(angle));
-        double ySpeed = speed * Math.sin(Math.toRadians(angle));
+        double xSpeed = (line.getX2() < line.getX1() ? -speed : speed) * Math.cos(Math.toRadians(angle));
+        double ySpeed = (line.getY2() < line.getY1() ? -speed : speed) * Math.sin(Math.toRadians(angle));
         while ((line.getX1() == line.getX2() || xStart != line.getX2())
                 && (line.getY1() == line.getY2() || yStart != line.getY2())) {
             double nextX = getNextNumberWithoutOverflow(xStart, xSpeed, line.getX2());
@@ -225,12 +283,26 @@ public final class Turtle {
     }
 
     /**
+     * A helper method to call the right function.
+     */
+    public void rt(double angle) {
+        right(angle);
+    }
+
+    /**
      * Turns a turtle left.
      *
      * @param angle The angle at which to turn the turtle.
      */
     public void left(double angle) {
         drawTurn(this.angle + angle, true);
+    }
+
+    /**
+     * A helper method to call the left function.
+     */
+    public void lt(double angle) {
+        left(angle);
     }
 
     /**
