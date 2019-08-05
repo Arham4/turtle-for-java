@@ -352,12 +352,30 @@ public final class Turtle {
     }
 
     /**
+     * Sets the x-coordinate of the Turtle.
+     *
+     * @param x The new x-coordinate
+     */
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    /**
      * The current y-coordinate of the center of the Turtle.
      *
      * @return The current y-coordinate of the Turtle.
      */
     public double getY() {
         return y;
+    }
+
+    /**
+     * Sets the y-coordinate of the Turtle.
+     *
+     * @param y The new y-coordinate
+     */
+    public void setY(double y) {
+        this.y = y;
     }
 
     void setScreen(Screen screen) {
