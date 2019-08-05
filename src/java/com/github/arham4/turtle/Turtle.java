@@ -393,6 +393,23 @@ public final class Turtle {
     }
 
     /**
+     * Sets the angle the Turtle is facing. An angle of 0 indicates facing the right. The angle system is similar to
+     * that of the unit circle.
+     *
+     * @param angle The new angle to face.
+     */
+    public void setHeading(double angle) {
+        this.angle = angle;
+    }
+
+    /**
+     * A helper method to call the setHeading method.
+     */
+    public void setH(double angle) {
+        setHeading(angle);
+    }
+
+    /**
      * The color of the Turtle.
      *
      * @return The color of the Turtle.
