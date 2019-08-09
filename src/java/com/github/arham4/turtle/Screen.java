@@ -34,12 +34,14 @@ public final class Screen extends JPanel {
                 graphics2D.draw(shape.getShape());
             }
             BufferedImage shape = turtle.getShape();
-            double angle = Math.toRadians(turtle.getAngle());
-            AffineTransform trans = (AffineTransform) graphics2D.getTransform().clone();
-            trans.setToTranslation(turtle.getX() - (Math.cos(angle) * (shape.getWidth() / 2.0) - ((shape.getHeight() / 2.0) * Math.sin(angle))),
-                    turtle.getY() - (Math.sin(angle) * (shape.getHeight() / 2.0)) - ((shape.getWidth() / 2.0) * Math.cos(angle)));
-            trans.rotate(angle);
-            graphics2D.drawImage(shape, trans, this);
+            if (shape != null) {
+                double angle = Math.toRadians(turtle.getAngle());
+                AffineTransform trans = (AffineTransform) graphics2D.getTransform().clone();
+                trans.setToTranslation(turtle.getX() - (Math.cos(angle) * (shape.getWidth() / 2.0) - ((shape.getHeight() / 2.0) * Math.sin(angle))),
+                        turtle.getY() - (Math.sin(angle) * (shape.getHeight() / 2.0)) - ((shape.getWidth() / 2.0) * Math.cos(angle)));
+                trans.rotate(angle);
+                graphics2D.drawImage(shape, trans, this);
+            }
         }
     }
 
@@ -97,5 +99,6 @@ public final class Screen extends JPanel {
     public void addTurtle(Turtle turtle) {
         turtleList.add(turtle);
         turtle.setScreen(this);
+        refreshFrame();
     }
 }

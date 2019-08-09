@@ -56,6 +56,9 @@ public final class Turtle {
                 e.printStackTrace();
             }
         }
+        if (screen != null) {
+            screen.refreshFrame();
+        }
     }
 
     /**
@@ -129,6 +132,9 @@ public final class Turtle {
                 }
                 shape.setRGB(row, column, color.getRGB());
             }
+        }
+        if (screen != null) {
+            screen.refreshFrame();
         }
     }
 
@@ -245,7 +251,9 @@ public final class Turtle {
             double nextY = getNextNumberWithoutOverflow(yStart, ySpeed, line.getY2());
             Line2D.Double smallLine = new Line2D.Double(xStart, yStart, nextX, nextY);
             lines.add(new ColoredShape(smallLine, color));
-            screen.refreshFrame();
+            if (screen != null) {
+                screen.refreshFrame();
+            }
             xStart = nextX;
             yStart = nextY;
             x = nextX;
