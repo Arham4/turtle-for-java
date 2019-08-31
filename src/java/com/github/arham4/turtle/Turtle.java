@@ -2,6 +2,7 @@ package com.github.arham4.turtle;
 
 import com.github.arham4.turtle.utils.BufferedImageUtilities;
 import com.github.arham4.turtle.utils.TurtleColor;
+import com.github.arham4.turtle.utils.TurtleKey;
 import com.github.arham4.turtle.utils.TurtleShape;
 
 import javax.imageio.ImageIO;
@@ -62,8 +63,31 @@ public final class Turtle implements KeyListener {
         penDown = false;
     }
 
-    public void onKey(int keyCode, Runnable action) {
-        // todo make this string instead of int
+    /**
+     * Listens for a when a key is pressed. A full list of keys can be found at {@link TurtleKey}. If the key
+     * is invalid, nothing will happen. The key may be case insensitive.
+     *
+     * @param keyName The case insensitive key to press.
+     * @param action  The action to occur when the key is pressed.
+     */
+    public void onKey(String keyName, Runnable action) {
+        if (TurtleKey.KEY_FOR_NAME.containsKey(keyName.toLowerCase())) {
+            onKey(TurtleKey.KEY_FOR_NAME.get(keyName.toLowerCase()), action);
+        }
+    }
+
+    /**
+     * Listens for a when a key is pressed using the appropriate {@link TurtleKey} constant. A full
+     * list of keys can be found at {@link TurtleKey}.
+     *
+     * @param key    The key to press.
+     * @param action The action to occur when the key is pressed.
+     */
+    public void onKey(TurtleKey key, Runnable action) {
+        onKey(key.getKeyCode(), action);
+    }
+
+    private void onKey(int keyCode, Runnable action) {
         functionForKey.put(keyCode, action);
     }
 
