@@ -1,5 +1,6 @@
 package com.github.arham4.turtle;
 
+import com.github.arham4.turtle.utils.BufferedImageUtilities;
 import com.github.arham4.turtle.utils.TurtleColor;
 import com.github.arham4.turtle.utils.TurtleShape;
 
@@ -22,6 +23,8 @@ import java.util.List;
 public final class Turtle {
     private Screen screen;
     private Color color;
+    private boolean penDown;
+    private String shapeName;
     private BufferedImage shape;
     private double x;
     private double y;
@@ -36,6 +39,21 @@ public final class Turtle {
         shape(TurtleShape.CLASSIC);
         speed = 3;
         lines = new ArrayList<>();
+        penDown = true;
+    }
+
+    /**
+     * Puts the pen down so the turtle starts drawing.
+     */
+    public void penDown() {
+        penDown = true;
+    }
+
+    /**
+     * Lifts the pen up so the turtle stops drawing.
+     */
+    public void penUp() {
+        penDown = false;
     }
 
     /**
@@ -48,8 +66,11 @@ public final class Turtle {
      * @see TurtleShape
      */
     public void shape(String name) {
-        shape = TurtleShape.SHAPE_FOR_NAME.get(name.toLowerCase());
-        if (shape == null) {
+        BufferedImage sourceShape = TurtleShape.SHAPE_FOR_NAME.get(name.toLowerCase());
+        shapeName = name;
+        if (sourceShape != null) {
+            shape = BufferedImageUtilities.deepCopy(sourceShape);
+        } else {
             try {
                 shape = ImageIO.read(new File(name));
             } catch (IOException e) {
@@ -83,6 +104,7 @@ public final class Turtle {
      * @see ImageIO#read(ImageInputStream)
      */
     public void shape(BufferedImage bufferedImage) {
+        shapeName = null;
         shape = bufferedImage;
     }
 
@@ -119,7 +141,7 @@ public final class Turtle {
      */
     public void color(Color color) {
         this.color = color;
-        if (!TurtleShape.SHAPE_FOR_NAME.containsValue(shape)) {
+        if (!TurtleShape.SHAPE_FOR_NAME.containsKey(shapeName)) {
             return;
         }
         int width = shape.getWidth();
@@ -153,6 +175,10 @@ public final class Turtle {
      * @param y THe y-coordinate for the turtle to go to.
      */
     public void goTo(double x, double y) {
+        if (screen != null) {
+            Line line = new Line(this.x, this.y, x, y);
+            drawLine(line);
+        }
         this.x = x;
         this.y = y;
     }
@@ -249,15 +275,17 @@ public final class Turtle {
                 && (line.getY1() == line.getY2() || yStart != line.getY2())) {
             double nextX = getNextNumberWithoutOverflow(xStart, xSpeed, line.getX2());
             double nextY = getNextNumberWithoutOverflow(yStart, ySpeed, line.getY2());
-            Line2D.Double smallLine = new Line2D.Double(xStart, yStart, nextX, nextY);
-            lines.add(new ColoredShape(smallLine, color));
+            if (penDown) {
+                Line2D.Double smallLine = new Line2D.Double(xStart, yStart, nextX, nextY);
+                lines.add(new ColoredShape(smallLine, color));
+            }
+            x = nextX;
+            y = nextY;
             if (screen != null) {
                 screen.refreshFrame();
             }
             xStart = nextX;
             yStart = nextY;
-            x = nextX;
-            y = nextY;
         }
     }
 
