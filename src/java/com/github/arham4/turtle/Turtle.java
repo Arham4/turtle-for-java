@@ -7,6 +7,8 @@ import com.github.arham4.turtle.utils.TurtleShape;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,13 +16,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A {@code Turtle} entity. A turtle is essentially a character that can be manipulated to perform actions on a screen,
  * such as movement and changes in its appearance.
  */
-public final class Turtle {
+public final class Turtle implements KeyListener {
     private Screen screen;
     private Color color;
     private boolean penDown;
@@ -30,7 +34,8 @@ public final class Turtle {
     private double y;
     private double angle;
     private double speed;
-    private List<ColoredShape> lines;
+    private final List<ColoredShape> lines;
+    private final Map<Integer, Runnable> functionForKey;
 
     /**
      * Creates a turtle with the {@link TurtleShape#CLASSIC} {@code shape} and a {@code speed} of 3.
@@ -39,6 +44,7 @@ public final class Turtle {
         shape(TurtleShape.CLASSIC);
         speed = 3;
         lines = new ArrayList<>();
+        functionForKey = new HashMap<>();
         penDown = true;
     }
 
@@ -54,6 +60,11 @@ public final class Turtle {
      */
     public void penUp() {
         penDown = false;
+    }
+
+    public void onKey(int keyCode, Runnable action) {
+        // todo make this string instead of int
+        functionForKey.put(keyCode, action);
     }
 
     /**
@@ -464,5 +475,23 @@ public final class Turtle {
 
     List<ColoredShape> getLines() {
         return lines;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        Runnable function = functionForKey.get(e.getKeyCode());
+        if (function != null) {
+            function.run();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }

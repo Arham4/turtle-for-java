@@ -2,6 +2,8 @@ package com.github.arham4.turtle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ import java.util.List;
  * The {@code Screen} to display all entities on. Without a screen, a Turtle program cannot exist. Thus, it is essential
  * to make a screen at the beginning of every Turtle program.
  */
-public final class Screen extends JPanel {
+public final class Screen extends JPanel implements KeyListener {
 
     private int width = 200;
     private int height = 200;
@@ -76,6 +78,7 @@ public final class Screen extends JPanel {
         frame.pack();
         frame.setLocationByPlatform(true);
         frame.setVisible(true);
+        frame.addKeyListener(this);
     }
 
     /**
@@ -100,5 +103,26 @@ public final class Screen extends JPanel {
         turtleList.add(turtle);
         turtle.setScreen(this);
         refreshFrame();
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        for (Turtle turtle : turtleList) {
+            turtle.keyTyped(e);
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        for (Turtle turtle : turtleList) {
+            turtle.keyPressed(e);
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        for (Turtle turtle : turtleList) {
+            turtle.keyReleased(e);
+        }
     }
 }
