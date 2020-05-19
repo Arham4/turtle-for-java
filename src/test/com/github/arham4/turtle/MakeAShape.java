@@ -8,8 +8,7 @@ public final class MakeAShape {
         Screen screen = new Screen();
         screen.setup(400, 400);
 
-        Turtle turtle = new Turtle();
-        screen.addTurtle(turtle);
+        Turtle turtle = new Turtle(screen);
         turtle.shape("gnome.png");
         drawShape(turtle, 4);
         turtle.color("green");

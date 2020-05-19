@@ -31,10 +31,10 @@ public final class Screen extends JPanel implements KeyListener {
         Graphics2D graphics2D = (Graphics2D) g;
         graphics2D.scale(1, -1);
         for (Turtle turtle : turtleList) {
-            for (ColoredShape shape : turtle.getLines()) {
-                graphics2D.setPaint(shape.getColor());
-                graphics2D.draw(shape.getShape());
-            }
+            AffineTransform origin = (AffineTransform) graphics2D.getTransform().clone();
+            origin.setToTranslation(0, 0);
+            graphics2D.drawImage(turtle.getLinesBuffer(), origin, this);
+
             BufferedImage shape = turtle.getShape();
             if (shape != null) {
                 double angle = Math.toRadians(turtle.getAngle());
@@ -45,6 +45,7 @@ public final class Screen extends JPanel implements KeyListener {
                 graphics2D.drawImage(shape, trans, this);
             }
         }
+        graphics2D.dispose();
     }
 
     /**

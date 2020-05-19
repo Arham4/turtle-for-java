@@ -35,16 +35,19 @@ public final class Turtle implements KeyListener {
     private double y;
     private double angle;
     private double speed;
-    private final List<ColoredShape> lines;
+    private BufferedImage linesBuffer;
     private final Map<Integer, Runnable> functionForKey;
 
     /**
      * Creates a turtle with the {@link TurtleShape#CLASSIC} {@code shape} and a {@code speed} of 3.
      */
-    public Turtle() {
+    public Turtle(Screen screen) {
+        this.screen = screen;
+        screen.addTurtle(this);
         shape(TurtleShape.CLASSIC);
+        color(Color.BLACK);
         speed = 3;
-        lines = new ArrayList<>();
+        linesBuffer = new BufferedImage(screen.getWidth(), screen.getHeight(), BufferedImage.TYPE_INT_ARGB);
         functionForKey = new HashMap<>();
         penDown = true;
     }
@@ -312,7 +315,10 @@ public final class Turtle implements KeyListener {
             double nextY = getNextNumberWithoutOverflow(yStart, ySpeed, line.getY2());
             if (penDown) {
                 Line2D.Double smallLine = new Line2D.Double(xStart, yStart, nextX, nextY);
-                lines.add(new ColoredShape(smallLine, color));
+                Graphics2D graphics2D = (Graphics2D) linesBuffer.getGraphics();
+                graphics2D.setPaint(color);
+                graphics2D.draw(smallLine);
+                graphics2D.dispose();
             }
             x = nextX;
             y = nextY;
@@ -497,8 +503,8 @@ public final class Turtle implements KeyListener {
         return color;
     }
 
-    List<ColoredShape> getLines() {
-        return lines;
+    public BufferedImage getLinesBuffer() {
+        return linesBuffer;
     }
 
     @Override
