@@ -1,8 +1,5 @@
 package com.github.arham4.turtle;
 
-import com.github.arham4.turtle.utils.processable.Change;
-import com.github.arham4.turtle.utils.processable.ChangeType;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -27,8 +24,6 @@ public final class Screen extends JPanel implements KeyListener {
         return new Dimension(width, height);
     }
 
-    private int invokes = 0;
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -36,14 +31,9 @@ public final class Screen extends JPanel implements KeyListener {
         Graphics2D graphics2D = (Graphics2D) g;
         graphics2D.scale(1, -1);
         for (Turtle turtle : turtleList) {
-            for (int i = 0; i < turtle.getLines().getUnprocessedChangesCount(); i++) {
-                Change<ColoredShape> change = turtle.getLines().process();
-                if (change.getType() == ChangeType.ADD) {
-                    ColoredShape shape = change.getChange();
-                    graphics2D.setPaint(shape.getColor());
-                    graphics2D.draw(shape.getShape());
-                    invokes++;
-                }
+            for (ColoredShape shape : turtle.getLines()) {
+                graphics2D.setPaint(shape.getColor());
+                graphics2D.draw(shape.getShape());
             }
             BufferedImage shape = turtle.getShape();
             if (shape != null) {
@@ -55,7 +45,6 @@ public final class Screen extends JPanel implements KeyListener {
                 graphics2D.drawImage(shape, trans, this);
             }
         }
-        System.out.println("invokes = " + invokes);
     }
 
     /**

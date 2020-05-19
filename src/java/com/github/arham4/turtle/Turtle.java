@@ -4,8 +4,6 @@ import com.github.arham4.turtle.utils.BufferedImageUtilities;
 import com.github.arham4.turtle.utils.TurtleColor;
 import com.github.arham4.turtle.utils.TurtleKey;
 import com.github.arham4.turtle.utils.TurtleShape;
-import com.github.arham4.turtle.utils.processable.LoggableCopyOnWriteArrayList;
-import com.github.arham4.turtle.utils.processable.LoggableCollection;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
@@ -18,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,7 @@ public final class Turtle implements KeyListener {
     private double y;
     private double angle;
     private double speed;
-    private final LoggableCollection<ColoredShape> lines;
+    private final List<ColoredShape> lines;
     private final Map<Integer, Runnable> functionForKey;
 
     /**
@@ -45,7 +44,7 @@ public final class Turtle implements KeyListener {
     public Turtle() {
         shape(TurtleShape.CLASSIC);
         speed = 3;
-        lines = new LoggableCopyOnWriteArrayList<>();
+        lines = new ArrayList<>();
         functionForKey = new HashMap<>();
         penDown = true;
     }
@@ -498,7 +497,7 @@ public final class Turtle implements KeyListener {
         return color;
     }
 
-    LoggableCollection<ColoredShape> getLines() {
+    List<ColoredShape> getLines() {
         return lines;
     }
 
